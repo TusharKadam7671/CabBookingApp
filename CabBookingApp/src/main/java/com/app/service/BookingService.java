@@ -2,12 +2,15 @@ package com.app.service;
 
 import java.util.List;
 
+import com.app.dto.BookingDto;
 import com.app.exception.BookingException;
+import com.app.exception.CustomerException;
+import com.app.exception.DriverException;
 import com.app.model.Booking;
 
 public interface BookingService {
 	
-	public Booking addBooking(Booking booking);
+	public Booking addBooking(BookingDto booking, Integer customerId, Integer driverId) throws DriverException, CustomerException;
 	
 	public Booking updateBooking(Booking booking) throws BookingException;
 	

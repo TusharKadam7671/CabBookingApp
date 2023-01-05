@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.dto.BookingDto;
 import com.app.exception.BookingException;
+import com.app.exception.CustomerException;
+import com.app.exception.DriverException;
 import com.app.model.Booking;
 import com.app.service.BookingService;
 
@@ -28,9 +32,9 @@ public class BookingController {
 	
 	
 	@PostMapping("/add")
-	public ResponseEntity<Booking> addBookingHandler(@RequestBody Booking booking)
+	public ResponseEntity<Booking> addBookingHandler(@RequestBody BookingDto booking, @RequestParam Integer customerId, @RequestParam Integer driverId) throws DriverException, CustomerException
 	{
-		Booking added = bookingService.addBooking(booking);
+		Booking added = bookingService.addBooking(booking,customerId,driverId);
 		
 		return new ResponseEntity<Booking>(added, HttpStatus.CREATED);
 	}
@@ -52,11 +56,13 @@ public class BookingController {
 	}
 	
 	@GetMapping("/bill/{customerId}")
-	public ResponseEntity<Float> calculateBillHandler(@PathVariable("customerId")  Integer customerId) throws BookingException
+	public ResponseEntity<String> calculateBillHandler(@PathVariable("customerId")  Integer customerId) throws BookingException
 	{
 		float bill = bookingService.calculateBill(customerId);
 		
-		return new ResponseEntity<Float>(bill, HttpStatus.ACCEPTED);
+		String str = "Total bill for customer with customerid "+customerId+" is "+bill+" INR.";
+		
+		return new ResponseEntity<String>(str, HttpStatus.ACCEPTED);
 	}
 	
 	@GetMapping("/view/customer/{customerId}")

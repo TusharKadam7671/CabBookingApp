@@ -6,9 +6,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.dto.BookingDto;
 import com.app.exception.BookingException;
+import com.app.exception.CustomerException;
+import com.app.exception.DriverException;
 import com.app.model.Booking;
+import com.app.model.Customer;
+import com.app.model.Driver;
 import com.app.repository.BookingRepository;
+import com.app.repository.CustomerRepository;
+import com.app.repository.DriverRepository;
 
 @Service
 public class BookingServiceImpl implements BookingService{
@@ -16,11 +23,30 @@ public class BookingServiceImpl implements BookingService{
 	
 	@Autowired
 	private BookingRepository bookingRepo;
+	
+	@Autowired
+	private DriverRepository driverRepo;
+	
+	@Autowired
+	private CustomerRepository customerRepo;
 
 	@Override
-	public Booking addBooking(Booking booking) {
+	public Booking addBooking(BookingDto booking,Integer customerId, Integer driverId) throws DriverException, CustomerException {
 		// TODO Auto-generated method stub
-		return bookingRepo.saveAndFlush(booking);
+		Booking nb = new Booking();
+		Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new CustomerException("Customer with id "+customerId+" does not exists.."));
+		nb.setCustomerId(customerId);
+		Driver dvr = driverRepo.findById(driverId).orElseThrow(() -> new DriverException("Driver with id "+driverId+" does not exists.."));
+		nb.setDriver(dvr);
+		nb.setFromLocation(booking.getFromLocation());
+		nb.setToLocation(booking.getToLocation());
+		nb.setFromDateTime(booking.getFromDateTime());
+		nb.setToDateTime(booking.getToDateTime());
+		nb.setStatus(false);
+		nb.setDistanceInKm(booking.getDistanceInKm());
+		nb.setBill(dvr.getCab().getPerKMrate() * booking.getDistanceInKm());
+		
+		return bookingRepo.saveAndFlush(nb);
 	}
 
 	@Override
