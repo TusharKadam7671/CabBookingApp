@@ -1,6 +1,9 @@
 package com.app.model;
 
+import com.app.Enum.ERole;
+
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,8 +14,8 @@ import lombok.ToString;
 
 @Entity
 
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 @ToString
 @Data
 public class Admin extends AbstractUser{
@@ -22,5 +25,18 @@ public class Admin extends AbstractUser{
 	private Integer adminId;
 	
 	
+	
+	
+	public Admin(int adminId, String username, String password, Address address, String mobileNumber, String email, ERole role) {
+		super(username,password,address,mobileNumber,email,role);
+		this.adminId = adminId;
+	}
+
+
+
+
+	public Admin() {
+		super();
+	}
 
 }
